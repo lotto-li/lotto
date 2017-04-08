@@ -71,7 +71,7 @@
 	      label="操作"
 	      width="150">
 	      <template scope="scope">
-	        <el-button @click="handleRead(row)" type="text" size="small">查看</el-button>
+	        <el-button @click="handleRead(scope.row)" type="text" size="small">查看</el-button>
 	        <el-button @click="" type="text" size="small">编辑</el-button>
 	        <el-button @click="" type="text" size="small">删除</el-button>
 	      </template>
@@ -90,7 +90,9 @@
    <!-- dialog -->
    <el-dialog title="查看" v-model="readFormVisible">
    	 <el-form :model="readForm" label-width="80px" ref="readForm">
-   	 
+   	 	<h1 style="text-align:center;">标题</h1>
+   	 	<hr>
+   	 	<p>1234content</p>
    	 </el-form>
      <div class="dialog-footer">
 		<el-button @click.native="readFormVisible = false">取 消</el-button>
@@ -118,21 +120,13 @@
     		   
     	   },
     	   
-    	   tableData: [{
-    		   name: 'LGD战队',
-           }, {
-        	   name: 'LGD战队',
-           }, {
-        	   name: 'LGD战队',
-           }, {
-        	   name: 'LGD战队',
-           }]
+    	   tableData: [],
          
  		}
      },
      methods:{
     	 handleRead: function(row){
-    		 console.log(row)
+    		 console.info(row);
     		 this.readFormVisible =true;
     	 }
      }
