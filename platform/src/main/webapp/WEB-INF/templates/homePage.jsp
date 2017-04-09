@@ -63,11 +63,11 @@
   <div class="nav">
     <div class="nav-in">
       <ul>
-        <li class="last"><a href="homePage.jsp">主页 </a></li>
+        <li class="last"><a href="home">主页 </a></li>
         <li><a href="myInfo.jsp">我的信息 </a></li>
         <li><a href="issue.jsp">议题讨论 </a></li>
         <li><a href="team.jsp">团队信息 </a></li>
-        <li><a href="notice.jsp">公告栏 </a></li>
+        <li><a href="notice">公告栏 </a></li>
         <li class="no_bg ped"><a href="about.jsp">关于 </a></li>
       </ul>
       <div class="clear"></div>

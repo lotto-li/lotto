@@ -32,6 +32,10 @@ public class IndexController {
     /**
      * 登录页面
      */
+    @RequestMapping(value="/")
+    public String index(){
+        return "redirect:/login";
+    }
     @RequestMapping(value="/login")
     public String login(){
         return "login";

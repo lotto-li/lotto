@@ -8,8 +8,10 @@
 <title>公告栏</title>
 <!-- 引入element UI -->
 <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-default/index.css">
-
 <link href="/static/css/style.css" rel="stylesheet" type="text/css" media="all" />
+
+<script src="/static/js/jquery-3.0.0.min.js" type="text/javascript" ></script>
+<script src="/static/js/util.js" type="text/javascript" ></script>
 </head>
 <body>
 <div class="wrapper"> 
@@ -52,6 +54,10 @@
   <!-- 公告栏部分 -->
   <div id="notice">
   	<!-- table -->
+  	<div style="margin: 5px 10px;">
+        <el-button @click="handleSearch();">搜索</el-button>
+        <el-button @click="handleAdd();">新增</el-button>
+  	</div>
 	<template> 
       <el-table :data="tableData" style="width: 100%">
       	<el-table-column
@@ -62,7 +68,7 @@
 		</el-table-column> 
 		<el-table-column prop="name" label="发布人" width="180">
 		</el-table-column> 
-		<el-table-column prop="date" label="日期" width="200"> 
+		<el-table-column prop="date" :formatter="formatDate" label="日期" width="200"> 
 		</el-table-column> 
 		<el-table-column prop="content" label="内容"> 
 		</el-table-column> 
@@ -72,8 +78,8 @@
 	      width="150">
 	      <template scope="scope">
 	        <el-button @click="handleRead(scope.row)" type="text" size="small">查看</el-button>
-	        <el-button @click="" type="text" size="small">编辑</el-button>
-	        <el-button @click="" type="text" size="small">删除</el-button>
+	        <el-button @click="handleEdit(scope.row)" type="text" size="small">编辑</el-button>
+	        <el-button @click="handleDelete(scope.row)" type="text" size="small">删除</el-button>
 	      </template>
     	</el-table-column>
 	  </el-table> 
@@ -90,13 +96,33 @@
    <!-- dialog -->
    <el-dialog title="查看" v-model="readFormVisible">
    	 <el-form :model="readForm" label-width="80px" ref="readForm">
-   	 	<h1 style="text-align:center;">标题</h1>
-   	 	<hr>
-   	 	<p>1234content</p>
+   	    <el-form-item label="title" prop="title">
+   	        <el-input :readonly="!readFormEditable"
+   	            v-model="readForm.title" auto-complete="off"></el-input>
+	    </el-form-item>
+        <el-form-item label="name" prop="name">
+            <el-input
+                :readonly="!readFormEditable"
+                v-model="readForm.name" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="date" prop="date">
+            <el-date-picker
+              :readonly="!readFormEditable"
+		      v-model="readForm.date"
+		      type="date"
+		      placeholder="选择日期">
+		    </el-date-picker>
+        </el-form-item>
+        <el-form-item label="content" prop="content">
+            <el-input
+                :readonly="!readFormEditable"
+                v-model="readForm.content" auto-complete="off"></el-input>
+        </el-form-item>
    	 </el-form>
-     <div class="dialog-footer">
+     <span slot="footer" class="dialog-footer">
 		<el-button @click.native="readFormVisible = false">取 消</el-button>
-	 </div>
+		<el-button v-if="readFormEditable" type="primary" @click="handleSubmit();">提交</el-button>
+	 </span>
    </el-dialog>
  </div>
   
@@ -113,11 +139,23 @@
 <script>
    new Vue({
      el: '#notice',
+     mounted(){
+    	 let arr = eval('${notices}');
+    	 arr.forEach(item => {
+    		 item.date = new Date(item.date.time);
+    	 })
+    	 this.tableData = arr;
+     },
      data: function(){
        return { 
+    	   readFormEditable: false,
     	   readFormVisible: false,
+    	   submitType: '',
     	   readForm:{
-    		   
+    		   title: '',
+    		   name: '',
+    		   date: null,
+    		   content: '',
     	   },
     	   
     	   tableData: [],
@@ -125,10 +163,101 @@
  		}
      },
      methods:{
+    	 formatDate(row, column){
+    		 let date = row[column.property]
+    		 return formatDate(date, "yyyy-MM-dd");
+    	 },
+    	 //搜索
+    	 handleSearch(){
+             let _this = this;
+    		 $.ajax({
+                 url: "/api/notices/",
+                 method: "GET",
+                 success(resp){
+                	 let arr = resp._embedded.notices;
+                	 arr.forEach(item => {
+                         item.date = new Date(item.date);
+                     })
+                     console.log(arr)
+                     _this.tableData = arr;
+                 },
+                 error(resp){
+                     console.log("error")
+                     console.log(resp)
+                 },
+             });
+    	 },
+    	 //查看
     	 handleRead: function(row){
-    		 console.info(row);
+             this.readFormEditable =false;
     		 this.readFormVisible =true;
-    	 }
+    		 Object.assign(this.readForm, row)
+    	 },
+    	 //新增
+    	 handleAdd(){
+             this.readFormEditable =true;
+             this.readFormVisible =true;
+             this.submitType = "add";
+             //清空readForm的所有内容
+             Object.keys(this.readForm).forEach((item, index) => {
+                 Vue.set(this.readForm, item, null);
+             })
+    	 },
+    	 //编辑
+    	 handleEdit(row){
+             this.readFormEditable =true;
+             this.readFormVisible =true;
+             this.submitType = "edit";
+             Object.assign(this.readForm, row)
+    	 },
+    	 //提交
+    	 handleSubmit(){
+    		 console.log(this.readForm)
+    		 let url = "/notice", method;
+    		 if(this.submitType == "edit"){
+    			 method = "PUT";
+    		 }else{
+    			 method = "POST";
+    		 }
+    		 let _this = this;
+    		 $.ajax({
+    			 url: url,
+    			 method: method,
+    			 data: this.readForm,
+    			 headers:{
+	   		        'Content-Type': 'application/x-www-form-urlencoded',
+	   		     },
+    			 success(resp){
+    				 console.log(resp)
+    	             _this.readFormVisible =false;
+    				 _this.handleSearch();
+    			 },
+                 error(resp){
+                     console.log("error")
+                     console.log(resp)
+                 },
+    		 });
+    	 },
+    	 //删除
+         handleDelete(row){
+             let _this = this;
+             $.ajax({
+                 url: "/deleteNotice/",
+                 method: "POST",
+                 data: row,
+                 headers:{
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                 },
+                 success(resp){
+                     console.log(resp)
+                     _this.handleSearch();
+                 },
+                 error(resp){
+                     console.log("error")
+                     console.log(resp)
+                 },
+             });
+         },
      }
    })
 </script>
