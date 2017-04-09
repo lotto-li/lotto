@@ -55,8 +55,15 @@
   <div id="notice">
   	<!-- table -->
   	<div style="margin: 5px 10px;">
+  	<el-row>
+  	  <el-col :span="4">
+  	    <el-input v-model="formInline.title" placeholder="请输入标题"></el-input>
+  	  </el-col>
+      <el-col :span="20">
         <el-button @click="handleSearch();">搜索</el-button>
         <el-button @click="handleAdd();">新增</el-button>
+      </el-col>
+  	</el-row>
   	</div>
 	<template> 
       <el-table :data="tableData" style="width: 100%">
@@ -151,6 +158,9 @@
     	   readFormEditable: false,
     	   readFormVisible: false,
     	   submitType: '',
+    	   formInline: {
+    		   title: '',
+    	   },
     	   readForm:{
     		   title: '',
     		   name: '',
@@ -171,8 +181,9 @@
     	 handleSearch(){
              let _this = this;
     		 $.ajax({
-                 url: "/api/notices/",
+                 url: "/api/notices/search/findByTitleLike",
                  method: "GET",
+                 data: _this.formInline,
                  success(resp){
                 	 let arr = resp._embedded.notices;
                 	 arr.forEach(item => {
