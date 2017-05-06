@@ -8,10 +8,10 @@
 		<link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css" />
 		<link rel="stylesheet" type="text/css" href="/static/css/login.css" />
 		<link rel="stylesheet" type="text/css" href="/static/css/jquery-ui.css">
-		<script src="js/jquery-3.0.0.min.js" type="text/javascript"></script>
-		<script src="js/jquery-ui.js" type="text/javascript"></script>
-		<script src="js/md5.js" type="text/javascript"></script>
-		<script src="js/register.js" type="text/javascript"></script>
+		<script src="/static/js/jquery-3.0.0.min.js" type="text/javascript"></script>
+		<script src="/static/js/jquery-ui.js" type="text/javascript"></script>
+		<script src="/static/js/md5.js" type="text/javascript"></script>
+		<script src="/static/js/register.js" type="text/javascript"></script>
 	</head>
 	
 	<body class="login_body">
@@ -29,18 +29,6 @@
 						</div>
 						<div class="col-xs-3" style="float: left;padding:0px;line-height:40px;">
 							<span id = "name_span"></span>
-						</div>
-					</div>
-					<div class="nav input_margin">
-						<div class="col-xs-4 input_title" >
-							邮&nbsp;&nbsp;&nbsp;箱:
-						</div>
-						<div class="col-xs-5" style="padding-right:0px;">
-							<input class="input" type="email" name="email" id="email" 
-								value="" placeholder="&nbsp;&nbsp;请输入邮箱"  />
-						</div>
-						<div class="col-xs-3" style="float: left;padding:0px;line-height:40px;">
-							<span id = "email_span"></span>
 						</div>
 					</div>
 					<div class="nav input_margin">

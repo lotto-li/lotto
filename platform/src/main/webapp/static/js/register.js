@@ -67,24 +67,25 @@
 		
 	function register(){
 		var name = $('#username').val();
-		var email = $('#email').val();
+//		var email = $('#email').val();
 		var confirmPwd = $('#confirmPwd').val();
-		if(name == "" || email == "" || confirmPwd == ""){
+		if(name == "" || confirmPwd == ""){
 			alert("请完善资料填写！");
 			return ;
 		}
 		
 		$.ajax({
-	        url: getContextPath() + "/servlet/RegisterServlet",
+	        url: "/registerValidate",
 	        type:"post",
 	        data:{
 	        	username:name,
-	        	userpwd:md5(confirmPwd),
-	        	email:email
+	        	userpwd:confirmPwd,
+//	        	userpwd:md5(confirmPwd),
+//	        	email:email
 	        	},
 	        success:function(response){
-				alert(response);
-				window.location.href = "login.jsp";
+	        	console.log(response)
+	        	window.location.href = "login";
 	        },
 	        error:function(e){
 	            alert("错误！！!");
@@ -92,5 +93,5 @@
 	    });  
 	}
 	function toLogin() {
-		window.location.href = "login.jsp";
+		window.location.href = "login";
 	}

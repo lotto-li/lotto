@@ -24,11 +24,14 @@
       <div class="toll-free">
         <c:choose>
             <c:when test="${!empty CURRENT_USER}">
-                <a>欢迎您: ${CURRENT_USER.username}</a>
+                <a href="myInfo" style="color:black; font-size:20px;">
+                	欢迎您: ${CURRENT_USER.username}&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                <a href="login" style="color:black; font-size:10px;">
+                	切换用户</a>
             </c:when>
             <c:otherwise>
-                <a href="login.jsp">登录&nbsp;&nbsp;&nbsp;&nbsp;</a>
-                <a href="register.jsp">注册</a>
+                <a href="login">登录&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                <a href="register">注册</a>
             </c:otherwise>
         </c:choose>
       </div>
@@ -41,12 +44,23 @@
   <div class="nav">
     <div class="nav-in">
       <ul>
-        <li class="last"><a href="homePage.jsp">主页 </a></li>
-        <li><a href="myInfo.jsp">我的信息 </a></li>
-        <li><a href="issue.jsp">议题讨论 </a></li>
-        <li><a href="team.jsp">团队信息 </a></li>
-        <li><a href="notice.jsp">公告栏 </a></li>
-        <li class="no_bg ped"><a href="about.jsp">关于 </a></li>
+        <li class="last"><a href="home">主页 </a></li>
+        <c:choose>
+            <c:when test="${CURRENT_USER.username == 'adm'}">
+        		<li><a href="userInfo">成员管理</a></li>
+        	</c:when>
+        	<c:when test="${!empty CURRENT_USER}">
+        		<li><a href="myInfo">我的信息 </a></li>
+        	</c:when>
+        </c:choose>
+        <li><a href="issue">议题讨论 </a></li>
+        <li><a href="team">团队信息 </a></li>
+        <li><a href="notice">公告栏 </a></li>
+        <c:choose>
+            <c:when test="${CURRENT_USER.username != 'adm'}">
+        		<li class="no_bg ped"><a href="about">关于 </a></li>
+        	</c:when>
+        </c:choose>
       </ul>
       <div class="clear"></div>
     </div>

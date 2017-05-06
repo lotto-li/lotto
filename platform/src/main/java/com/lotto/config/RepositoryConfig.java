@@ -6,7 +6,10 @@ import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
 import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurer;
 import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurerAdapter;
 
+import com.lotto.domain.Issue;
+import com.lotto.domain.IssueRecord;
 import com.lotto.domain.Notice;
+import com.lotto.domain.Team;
 
 /** 
 * @author Hydra
@@ -22,7 +25,7 @@ class SpringDataRestConfig {
             @Override
             public void configureRepositoryRestConfiguration(
                                  RepositoryRestConfiguration config) {
-                config.exposeIdsFor(Notice.class);
+                config.exposeIdsFor(Notice.class, Team.class, Issue.class, IssueRecord.class);
             }
         };
     }

@@ -12,7 +12,7 @@ import lombok.Data;
 import lombok.ToString;
 
 /** 
-* @author Hydra
+* @author lotto
 * @version 创建时间:2017年4月9日 上午10:19:52 
 * @Description 
 */
@@ -22,7 +22,47 @@ import lombok.ToString;
 @Table(name="t_notice")
 public class Notice {
 
-    @Id
+    public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	@Id
     @GeneratedValue
     private Long id;
     

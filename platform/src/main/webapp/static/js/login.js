@@ -95,7 +95,7 @@ function login(){
 }
 //跳转到注册页面
 function toRegister() {
-	window.location.href = "register.jsp";
+	window.location.href = "register";
 }
  // 刷新图片--添加随机数防止缓存
 function changeImg() {

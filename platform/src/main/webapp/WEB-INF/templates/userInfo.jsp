@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>公告栏</title>
+<title>成员管理</title>
 <!-- 引入element UI -->
 <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-default/index.css">
 <link href="/static/css/style.css" rel="stylesheet" type="text/css" media="all" />
@@ -65,13 +65,13 @@
     </div>
   </div>
   
-  <!-- 公告栏部分 -->
-  <div id="notice">
+  <!-- user -->
+  <div id="user">
   	<!-- table -->
   	<div style="margin: 5px 10px;">
   	<el-row>
   	  <el-col :span="4">
-  	    <el-input v-model="formInline.title" placeholder="请输入标题"></el-input>
+  	    <el-input v-model="formInline.username" placeholder="请输入用户名"></el-input>
   	  </el-col>
       <el-col :span="20">
         <el-button @click="handleSearch();">搜索</el-button>
@@ -85,11 +85,9 @@
 	      type="index"
 	      width="50">
 	    </el-table-column>
-		<el-table-column prop="title" label="标题" >
+		<el-table-column prop="username" label="用户" >
 		</el-table-column> 
-		<el-table-column prop="name" label="发布人" width="180">
-		</el-table-column> 
-		<el-table-column prop="date" :formatter="formatDate" label="日期" width="200"> 
+		<el-table-column prop="password" label="密码">
 		</el-table-column> 
 		
 		<el-table-column
@@ -98,10 +96,8 @@
 	      width="150">
 	      <template scope="scope">
 	        <el-button @click="handleRead(scope.row)" type="text" size="small">查看</el-button>
-	        <template v-if="scope.row.name == '${CURRENT_USER.username}' ">
-	        	<el-button @click="handleEdit(scope.row)" type="text" size="small">编辑</el-button>
-	        	<el-button @click="handleDelete(scope.row)" type="text" size="small">删除</el-button>
-	        </template>
+	        <el-button @click="handleEdit(scope.row)" type="text" size="small">编辑</el-button>
+	        <el-button @click="handleDelete(scope.row)" type="text" size="small">删除</el-button>
 	      </template>
     	</el-table-column>
 	  </el-table> 
@@ -116,39 +112,17 @@
    </div>
    
    <!-- dialog -->
-   <el-dialog :title="readFormTtile" v-model="readFormVisible">
+   <el-dialog title="查看" v-model="readFormVisible">
    	 <el-form :model="readForm" label-width="80px" ref="readForm">
-   	    <el-form-item label="标题" prop="title">
+   	    <el-form-item label="username" prop="username">
    	        <el-input :readonly="!readFormEditable"
-   	            v-model="readForm.title" auto-complete="off"></el-input>
+   	            v-model="readForm.username" auto-complete="off"></el-input>
 	    </el-form-item>
 	    
-	    <el-row>
-	      <el-col span="12">
-	        <el-form-item label="发布人" prop="name">
-	            <el-input
-	                :readonly="!readFormEditable"
-	                v-model="readForm.name" auto-complete="off"></el-input>
-	        </el-form-item>
-	      </el-col>
-	      <el-col span="12">
-	        <el-form-item label="发布日期" prop="date">
-	            <el-date-picker
-	              :readonly="!readFormEditable"
-			      v-model="readForm.date"
-			      type="date"
-			      placeholder="选择日期">
-			    </el-date-picker>
-	        </el-form-item>
-	      </el-col>
-        </el-row>
-        
-        <el-form-item label="内容" prop="content">
-            <el-input
-            	type="textarea" 
-            	rows="10"
-                :readonly="!readFormEditable"
-                v-model="readForm.content" auto-complete="off"></el-input>
+        <el-form-item label="password" prop="password">
+           <el-input
+               :readonly="!readFormEditable"
+               v-model="readForm.password" auto-complete="off"></el-input>
         </el-form-item>
    	 </el-form>
      <span slot="footer" class="dialog-footer">
@@ -170,20 +144,30 @@
     
 <script>
    new Vue({
-     el: '#notice',
+     el: '#user',
      mounted(){
-    	 let arr = eval('${notices}');
+    	 let _this = this;
+    	 $.ajax({
+             url: "/api/sysUsers",
+             method: "GET",
+             success(resp){
+            	 let arr = resp._embedded.sysUsers;
+            	 _this.tableData = arr;
+             },
+             error(resp){
+                 console.log("error")
+             },
+         });
+    	 let arr = eval('${sysUsers}');
     	 arr.forEach(item => {
     		 item.date = new Date(item.date.time);
     	 })
-    	 console.log(arr)
     	 this.tableData = arr;
      },
      data: function(){
        return { 
     	   readFormEditable: false,
     	   readFormVisible: false,
-    	   readFormTtile: '',
     	   submitType: '',
     	   formInline: {
     	   },
@@ -207,11 +191,11 @@
     	 handleSearch(){
              let _this = this;
     		 $.ajax({
-                 url: "/api/notices/search/findByTitleLike",
+                 url: "/api/sysUsers/search/findByUsernameLike",
                  method: "GET",
                  data: _this.formInline,
                  success(resp){
-                	 let arr = resp._embedded.notices;
+                	 let arr = resp._embedded.sysUsers;
                 	 arr.forEach(item => {
                          item.date = new Date(item.date);
                      })
@@ -226,14 +210,12 @@
     	 },
     	 //查看
     	 handleRead: function(row){
-    		 this.readFormTtile='查看';
              this.readFormEditable =false;
     		 this.readFormVisible =true;
     		 Object.assign(this.readForm, row)
     	 },
     	 //新增
     	 handleAdd(){
-    		 this.readFormTtile='新增';
              this.readFormEditable =true;
              this.readFormVisible =true;
              this.submitType = "add";
@@ -244,7 +226,6 @@
     	 },
     	 //编辑
     	 handleEdit(row){
-    		 this.readFormTtile='编辑';
              this.readFormEditable =true;
              this.readFormVisible =true;
              this.submitType = "edit";
@@ -253,7 +234,7 @@
     	 //提交
     	 handleSubmit(){
     		 console.log(this.readForm)
-    		 let url = "/notice", method;
+    		 let url = "/sysUser", method;
     		 if(this.submitType == "edit"){
     			 method = "PUT";
     		 }else{
@@ -282,7 +263,7 @@
          handleDelete(row){
              let _this = this;
              $.ajax({
-                 url: "/deleteNotice/",
+                 url: "/deleteSysUser/",
                  method: "POST",
                  data: row,
                  headers:{
