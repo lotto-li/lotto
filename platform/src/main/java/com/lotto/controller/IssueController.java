@@ -31,9 +31,10 @@ public class IssueController {
 
     @RequestMapping(value="/issue", method=RequestMethod.GET)
     public String issue(HttpServletRequest request, HttpServletResponse response){
-        List<Issue> issues = issueService.findAll();
-        JSONArray jsonArray = JSONArray.fromObject(issues);
-        request.setAttribute("issues", jsonArray);
+        //JPA问题，在前端发请求拿数据好了
+//        List<Issue> issues = issueService.findAll();
+//        JSONArray jsonArray = JSONArray.fromObject(issues);
+//        request.setAttribute("issues", jsonArray);
         return "issue";
     }
 

@@ -2,7 +2,6 @@ package com.lotto.domain;
 
 import java.util.Date;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -12,9 +11,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
 import lombok.ToString;
-import net.minidev.json.annotate.JsonIgnore;
 
 /** 
 * @author lotto
@@ -40,9 +40,9 @@ public class IssueRecord {
     @Column(name="date")
     private Date date;
     
+    @JsonIgnore
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="issue_id", insertable=false, updatable=false)
-    @JsonIgnore
     private Issue issue;
     
     @Column(name="issue_id")
